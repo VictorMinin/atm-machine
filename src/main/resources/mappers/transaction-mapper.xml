@@ -1,0 +1,58 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.atm.persistence.ITransactionDAO">
+
+    <resultMap id="TransactionResultMap" type="Transaction" autoMapping="false">
+        <result property="transactionId" column="transaction_id"/>
+        <result property="amount" column="amount"/>
+
+        <association property="transactionStatus" column="transaction_status_id" javaType="TransactionStatus"
+                     select="com.solvd.atm.persistence.ITransactionStatusDAO.getEntityById"/>
+        <association property="transactionType" column="transaction_type_id" javaType="TransactionType"
+                     select="com.solvd.atm.persistence.ITransactionTypeDAO.getEntityById"/>
+        <association property="senderCard" column="sender_card_id" javaType="Card"
+                     select="com.solvd.atm.persistence.ICardDAO.getEntityById"/>
+        <association property="recipientCard" column="recipient_card_id" javaType="Card"
+                     select="com.solvd.atm.persistence.ICardDAO.getEntityById"/>
+        <association property="event" column="event_id" javaType="Event"
+                     select="com.solvd.atm.persistence.IEventDAO.getEntityById"/>
+    </resultMap>
+
+    <select id="getAllTransactionByCardId" resultMap="TransactionResultMap">
+        SELECT * FROM transactions WHERE sender_card_id = #{cardId};
+    </select>
+
+    <select id="getAll" resultMap="TransactionResultMap">
+        SELECT * FROM transactions;
+    </select>
+
+    <select id="getEntityById" resultMap="TransactionResultMap">
+        SELECT * FROM transactions WHERE transaction_id = #{transactionId};
+    </select>
+
+    <insert id="saveEntity" parameterType="Transaction" useGeneratedKeys="true" keyProperty="transactionId"
+            keyColumn="transaction_id">
+        INSERT INTO transactions (amount, transaction_status_id, transaction_type_id, sender_card_id, recipient_card_id,
+        event_id)
+        VALUES (#{amount}, #{transactionStatus.transactionStatusId}, #{transactionType.transactionTypeId},
+        #{senderCard.cardId}, #{recipientCard.cardId}, #{event.eventId});
+    </insert>
+
+    <update id="updateEntity" parameterType="Transaction">
+        UPDATE transactions SET
+        amount = #{amount},
+        transaction_status_id = #{transactionStatus.transactionStatusId},
+        transaction_type_id = #{transactionType.transactionTypeId},
+        sender_card_id = #{senderCard.cardId},
+        recipient_card_id = #{recipientCard.cardId},
+        event_id = #{event.eventId}
+        WHERE transaction_id = #{transactionId};
+    </update>
+
+    <delete id="removeEntityById" parameterType="int">
+        DELETE FROM transactions WHERE transaction_id = #{transactionId};
+    </delete>
+
+</mapper>

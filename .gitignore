@@ -1,0 +1,11 @@
+.idea/
+out/
+## .properties files should be config files with credentials
+*.properties
+.iml
+logs/
+target/
+dependency-reduced-pom.xml
+db.properties
+src/main/resources/db.properties
+*.json

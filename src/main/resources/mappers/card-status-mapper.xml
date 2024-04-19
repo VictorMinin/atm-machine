@@ -1,0 +1,40 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.atm.persistence.ICardStatusDAO">
+
+    <resultMap id="CardStatusResultMap" type="CardStatus" autoMapping="false">
+        <result property="cardStatusId" column="card_status_id"/>
+        <result property="cardStatus" column="status"/>
+    </resultMap>
+
+    <select id="getCardStatusByName" resultMap="CardStatusResultMap">
+        SELECT * FROM card_statuses WHERE status = #{statusName};
+    </select>
+
+    <select id="getAll" resultMap="CardStatusResultMap">
+        SELECT * FROM card_statuses;
+    </select>
+
+    <select id="getEntityById" resultMap="CardStatusResultMap">
+        SELECT * FROM card_statuses WHERE card_status_id = #{cardStatusId};
+    </select>
+
+    <insert id="saveEntity" parameterType="CardStatus" useGeneratedKeys="true" keyProperty="cardStatusId"
+            keyColumn="card_status_id">
+        INSERT INTO card_statuses (status)
+        VALUES (#{cardStatus})
+    </insert>
+
+    <update id="updateEntity" parameterType="CardStatus">
+        UPDATE card_statuses SET
+        status = #{cardStatus}
+        WHERE card_status_id = #{cardStatusId}
+    </update>
+
+    <delete id="removeEntityById" parameterType="int">
+        DELETE FROM card_statuses WHERE card_status_id = #{cardStatusId};
+    </delete>
+
+</mapper>

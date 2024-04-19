@@ -1,0 +1,40 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.atm.persistence.IUserTypeDAO">
+
+    <resultMap id="UserTypeResultMap" type="UserType" autoMapping="false">
+        <result property="userTypeId" column="user_type_id"/>
+        <result property="userType" column="user_type"/>
+    </resultMap>
+
+    <select id="getUserTypeByName" resultMap="UserTypeResultMap">
+        SELECT * FROM user_types WHERE user_type = #{typeName};
+    </select>
+
+    <select id="getAll" resultMap="UserTypeResultMap">
+        SELECT * FROM user_types;
+    </select>
+
+    <select id="getEntityById" resultMap="UserTypeResultMap">
+        SELECT * FROM user_types WHERE user_type_id = #{userTypeId};
+    </select>
+
+    <insert id="saveEntity" parameterType="UserType" useGeneratedKeys="true" keyProperty="userTypeId"
+            keyColumn="user_type_id">
+        INSERT INTO user_types (user_type)
+        VALUES (#{userType})
+    </insert>
+
+    <update id="updateEntity" parameterType="UserType">
+        UPDATE user_types SET
+        user_type = #{userType}
+        WHERE user_type_id = #{userTypeId};
+    </update>
+
+    <delete id="removeEntityById" parameterType="int">
+        DELETE FROM user_types WHERE user_type_id = #{userTypeId};
+    </delete>
+
+</mapper>

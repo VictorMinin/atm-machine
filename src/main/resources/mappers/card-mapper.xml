@@ -1,0 +1,68 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.atm.persistence.ICardDAO">
+
+    <resultMap id="CardResultMap" type="Card" autoMapping="false">
+        <result property="cardId" column="card_id"/>
+        <result property="cardNumber" column="card_number"/>
+        <result property="pinNumber" column="pin_number"/>
+        <result property="expirationDate" column="expiration_date"/>
+        <result property="cvc" column="cvc"/>
+
+        <association property="cardStatus" column="card_status_id" javaType="CardStatus"
+                     select="com.solvd.atm.persistence.ICardStatusDAO.getEntityById"/>
+        <association property="cardType" column="card_type_id" javaType="CardType"
+                     select="com.solvd.atm.persistence.ICardTypeDAO.getEntityById"/>
+        <association property="account" column="account_id" javaType="Account"
+                     select="com.solvd.atm.persistence.IAccountDAO.getEntityById"/>
+    </resultMap>
+
+    <update id="blockCardById">
+        Update cards SET card_status_id =
+        (SELECT card_status_id FROM card_statuses WHERE status = "Blocked")
+        WHERE card_id = #{cardID};
+    </update>
+
+    <update id="unblockCardById">
+        Update cards SET card_status_id =
+        (SELECT card_status_id FROM card_statuses WHERE status = "Active")
+        WHERE card_id = #{cardID};
+    </update>
+
+    <select id="getCardByCardNumber" resultMap="CardResultMap">
+        SELECT * FROM cards WHERE card_number = #{cardNumber};
+    </select>
+
+    <select id="getAll" resultMap="CardResultMap">
+        SELECT * FROM cards;
+    </select>
+
+    <select id="getEntityById" resultMap="CardResultMap">
+        SELECT * FROM cards WHERE card_id = #{cardId};
+    </select>
+
+    <insert id="saveEntity" parameterType="Card" useGeneratedKeys="true" keyProperty="cardId" keyColumn="card_id">
+        INSERT INTO cards (card_number, pin_number, expiration_date, cvc, card_status_id, card_type_id, account_id)
+        VALUES (#{cardNumber}, #{pinNumber}, #{expirationDate}, #{cvc}, #{cardStatus.cardStatusId},
+        #{cardType.cardTypeId}, #{account.accountId})
+    </insert>
+
+    <update id="updateEntity" parameterType="Card">
+        UPDATE cards SET
+        card_number = #{cardNumber},
+        pin_number = #{pinNumber},
+        expiration_date = #{expirationDate},
+        cvc = #{cvc},
+        card_status_id = #{cardStatus.cardStatusId},
+        card_type_id = #{cardType.cardTypeId},
+        account_id = #{account.accountId}
+        WHERE card_id = #{cardId};
+    </update>
+
+    <delete id="removeEntityById" parameterType="int">
+        DELETE FROM cards WHERE card_id = #{cardId};
+    </delete>
+
+</mapper>

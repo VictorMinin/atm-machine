@@ -1,0 +1,39 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.atm.persistence.IEventDAO">
+
+    <resultMap id="EventResultMap" type="Event" autoMapping="false">
+        <result property="eventId" column="event_id"/>
+        <result property="date" column="date"/>
+
+        <association property="eventType" column="event_type_id"
+                     select="com.solvd.atm.persistence.IEventTypeDAO.getEntityById"/>
+    </resultMap>
+
+    <select id="getAll" resultMap="EventResultMap">
+        SELECT * FROM events;
+    </select>
+
+    <select id="getEntityById" resultMap="EventResultMap">
+        SELECT * FROM events WHERE event_id = #{eventId};
+    </select>
+
+    <insert id="saveEntity" parameterType="Event" useGeneratedKeys="true" keyProperty="eventId" keyColumn="event_id">
+        INSERT INTO events (date, event_type_id)
+        VALUES (#{date}, #{eventType.eventTypeId})
+    </insert>
+
+    <update id="updateEntity" parameterType="Event">
+        UPDATE events SET
+        date = #{date},
+        event_type_id = #{eventType.eventTypeId}
+        WHERE event_id = #{eventId};
+    </update>
+
+    <delete id="removeEntityById" parameterType="int">
+        DELETE FROM events WHERE event_id = #{eventId};
+    </delete>
+
+</mapper>

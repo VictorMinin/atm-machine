@@ -1,0 +1,50 @@
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+    <properties resource="db.properties"/>
+
+    <typeAliases>
+        <typeAlias alias="Account" type="com.solvd.atm.models.Account"/>
+        <typeAlias alias="Card" type="com.solvd.atm.models.Card"/>
+        <typeAlias alias="CardStatus" type="com.solvd.atm.models.CardStatus"/>
+        <typeAlias alias="CardType" type="com.solvd.atm.models.CardType"/>
+        <typeAlias alias="Event" type="com.solvd.atm.models.Event"/>
+        <typeAlias alias="EventType" type="com.solvd.atm.models.EventType"/>
+        <typeAlias alias="Transaction" type="com.solvd.atm.models.Transaction"/>
+        <typeAlias alias="TransactionStatus" type="com.solvd.atm.models.TransactionStatus"/>
+        <typeAlias alias="TransactionType" type="com.solvd.atm.models.TransactionType"/>
+        <typeAlias alias="User" type="com.solvd.atm.models.User"/>
+        <typeAlias alias="UserType" type="com.solvd.atm.models.UserType"/>
+    </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+                <property name="poolMaximumActiveConnections" value="30"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="mappers/account-mapper.xml"/>
+        <mapper resource="mappers/card-mapper.xml"/>
+        <mapper resource="mappers/card-status-mapper.xml"/>
+        <mapper resource="mappers/card-type-mapper.xml"/>
+        <mapper resource="mappers/event-type-mapper.xml"/>
+        <mapper resource="mappers/event-mapper.xml"/>
+        <mapper resource="mappers/transaction-mapper.xml"/>
+        <mapper resource="mappers/transaction-status-mapper.xml"/>
+        <mapper resource="mappers/transaction-type-mapper.xml"/>
+        <mapper resource="mappers/user-mapper.xml"/>
+        <mapper resource="mappers/user-type-mapper.xml"/>
+    </mappers>
+
+</configuration>

@@ -1,0 +1,56 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.atm.persistence.IAccountDAO">
+
+    <resultMap id="AccountResultMap" type="Account" autoMapping="false">
+        <result property="accountId" column="account_id"/>
+        <result property="amount" column="amount"/>
+        <result property="creditMax" column="credit_max"/>
+
+        <association property="user" column="user_id" javaType="User"
+                     select="com.solvd.atm.persistence.IUserDAO.getEntityById"/>
+    </resultMap>
+
+    <update id="withdraw">
+        UPDATE accounts a SET amount = a.amount - #{amount}
+        WHERE account_id = #{accountId};
+    </update>
+
+    <update id="deposit">
+        UPDATE accounts a SET amount = a.amount + #{amount}
+        WHERE account_id = #{accountId};
+    </update>
+
+    <select id="getAll" resultMap="AccountResultMap">
+        SELECT * FROM accounts;
+    </select>
+
+    <select id="getEntityById" resultMap="AccountResultMap">
+        SELECT * FROM accounts WHERE account_id = #{accountId};
+    </select>
+
+    <insert id="saveEntity" parameterType="Account" useGeneratedKeys="true" keyProperty="accountId"
+            keyColumn="account_id">
+        INSERT INTO accounts (amount, user_id, credit_max)
+        VALUES (#{amount}, #{user.userId}, #{creditMax})
+    </insert>
+
+    <update id="updateEntity" parameterType="Account">
+        UPDATE accounts SET
+        amount = #{amount},
+        user_id = #{user.userId},
+        credit_max = #{creditMax}
+        WHERE account_id = #{accountId};
+    </update>
+
+    <delete id="removeEntityById" parameterType="int">
+        DELETE FROM accounts WHERE account_id = #{accountId};
+    </delete>
+
+    <select id="getAccountByUserID" resultMap="AccountResultMap">
+        SELECT * FROM accounts WHERE user_id = #{userID};
+    </select>
+
+</mapper>

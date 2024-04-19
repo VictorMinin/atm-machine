@@ -1,0 +1,40 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.atm.persistence.ICardTypeDAO">
+
+    <resultMap id="CardTypeResultMap" type="CardType" autoMapping="false">
+        <result property="cardTypeId" column="card_type_id"/>
+        <result property="typeName" column="type_name"/>
+    </resultMap>
+
+    <select id="getCardTypeByName" resultMap="CardTypeResultMap">
+        SELECT * FROM card_types WHERE type_name = #{typeName};
+    </select>
+
+    <select id="getAll" resultMap="CardTypeResultMap">
+        SELECT * FROM card_types;
+    </select>
+
+    <select id="getEntityById" resultMap="CardTypeResultMap">
+        SELECT * FROM card_types WHERE card_type_id = #{cardTypeId};
+    </select>
+
+    <insert id="saveEntity" parameterType="CardType" useGeneratedKeys="true" keyProperty="cardTypeId"
+            keyColumn="card_type_id">
+        INSERT INTO card_types (type_name)
+        VALUES (#{typeName})
+    </insert>
+
+    <update id="updateEntity" parameterType="CardType">
+        UPDATE card_types SET
+        type_name = #{typeName}
+        WHERE card_type_id = #{cardTypeId};
+    </update>
+
+    <delete id="removeEntityById" parameterType="int">
+        DELETE FROM card_types WHERE card_type_id = #{cardTypeId};
+    </delete>
+
+</mapper>

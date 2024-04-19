@@ -1,0 +1,43 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solvd.atm.persistence.IUserDAO">
+
+    <resultMap id="UserResultMap" type="User" autoMapping="false">
+        <result property="userId" column="user_id"/>
+        <result property="name" column="name"/>
+
+        <association property="userType" column="user_type_id" javaType="UserType"
+                     select="com.solvd.atm.persistence.IUserTypeDAO.getEntityById"/>
+    </resultMap>
+
+    <select id="getAll" resultMap="UserResultMap">
+        SELECT * FROM users;
+    </select>
+
+    <select id="getEntityById" resultMap="UserResultMap">
+        SELECT * FROM users WHERE user_id = #{userId};
+    </select>
+
+    <insert id="saveEntity" parameterType="User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+        INSERT INTO users (name, user_type_id)
+        VALUES (#{name}, #{userType.userTypeId})
+    </insert>
+
+    <update id="updateEntity" parameterType="User">
+        UPDATE users SET
+        name = #{name},
+        user_type_id = #{userType.userTypeId}
+        WHERE user_id = #{userId};
+    </update>
+
+    <delete id="removeEntityById" parameterType="int">
+        DELETE FROM users WHERE user_id = #{userId};
+    </delete>
+
+    <select id="getUserByName" resultMap="UserResultMap">
+        SELECT * FROM users WHERE name = #{name};
+    </select>
+
+</mapper>
